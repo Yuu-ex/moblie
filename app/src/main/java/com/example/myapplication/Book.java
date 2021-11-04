@@ -17,4 +17,8 @@ public class Book {
     public int getCoverResourceId() {
         return CoverResourceId;
     }
+
+    public void setName(String name) {
+        this.Title = name;
+    }
 }
