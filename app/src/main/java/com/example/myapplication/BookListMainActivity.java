@@ -101,7 +101,7 @@ public class BookListMainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initData();
-    //找到控件
+        //找到控件
         mTabLayout = findViewById(R.id.tab_layout);
         mViewPage = findViewById(R.id.view_page);
         //创建适配器
