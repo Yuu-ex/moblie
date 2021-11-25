@@ -6,30 +6,33 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.myapplication.Data.Book;
 import com.example.myapplication.Data.DataBank;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookListMainActivity extends AppCompatActivity  {
-    private DataBank dataBank;
+
+
+    public DataBank dataBank;
+    private TabLayout mTabLayout;
+    private ViewPager2 mViewPage;
+    private String[] tabTitles;//tab的标题
+    private List<Fragment> mDatas = new ArrayList<>();//ViewPage2的Fragment容器
+
     public static final int RESULT_CODE = 901;
     public static final int REQUEST_CODE = 123;
     public static final int REQUEST_CODE_EDIT = REQUEST_CODE+1;
@@ -98,6 +101,40 @@ public class BookListMainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initData();
+    //找到控件
+        mTabLayout = findViewById(R.id.tab_layout);
+        mViewPage = findViewById(R.id.view_page);
+        //创建适配器
+        MyViewPageAdapter mAdapter = new MyViewPageAdapter(this,mDatas);
+        mViewPage.setAdapter(mAdapter);
+
+        //TabLayout与ViewPage2联动关键代码
+        new TabLayoutMediator(mTabLayout, mViewPage, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                tab.setText(tabTitles[position]);
+            }
+        }).attach();
+
+        mViewPage.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+        });
+        //TabLayout的选中改变监听
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
 
         FloatingActionButton fabAdd=findViewById(R.id.floating_action_button_add);
         fabAdd.setOnClickListener(view -> {
@@ -110,132 +147,24 @@ public class BookListMainActivity extends AppCompatActivity  {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mainRecycleView.setLayoutManager(layoutManager);
 
-        recyclerViewAdapter = new MyRecyclerViewAdapter(bookList);
+        recyclerViewAdapter = new MyRecyclerViewAdapter(this, bookList);
         mainRecycleView.setAdapter(recyclerViewAdapter);
     }
 
 
     public void initData() {
+        tabTitles = new String[]{"图书", "新闻","卖家"};
+        //EditBookActivity EditBookFragment = new EditBookActivity();
+        Fragmentone frgTone = new Fragmentone();
+        mDatas.add(frgTone);
+        mDatas.add(frgTone);
+        mDatas.add(frgTone);
+
         DataBank dataBank = new DataBank(BookListMainActivity.this);
         bookList = dataBank.loadData();
 
     }
 
 
-
-
-    private class MyRecyclerViewAdapter extends RecyclerView.Adapter {
-        private List<Book> bookList;
-
-        public MyRecyclerViewAdapter(List<Book> bookList) {
-            this.bookList = bookList;
-        }
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.booklist_holder, parent, false);
-
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder Holder, int position) {
-            MyViewHolder holder = (MyViewHolder) Holder;
-
-            holder.getImageView().setImageResource(bookList.get(position).getCoverResourceId());
-            holder.getTextViewName().setText(bookList.get(position).getTitle());
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return bookList.size();
-        }
-
-
-
-
-    private class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public static final int menu_id_add = 1;
-        public static final int menu_id_edit = 2;
-        public static final int menu_id_delete = 3;
-        private final ImageView imageView;
-        private final TextView textViewName;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-
-            this.imageView = itemView.findViewById(R.id.image_view_book_cover);
-            this.textViewName = itemView.findViewById(R.id.text_view_book_title);
-
-            itemView.setOnCreateContextMenuListener(this);
-
-        }
-
-        public ImageView getImageView() {
-            return imageView;
-        }
-
-        public TextView getTextViewName() {
-            return textViewName;
-        }
-
-
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-
-            MenuItem menuItemAdd = contextMenu.add(Menu.NONE, menu_id_add, menu_id_add, "Add");
-            MenuItem menuItemEdit = contextMenu.add(Menu.NONE, menu_id_edit, menu_id_edit, "Edit");
-            MenuItem menuItemDelete = contextMenu.add(Menu.NONE, menu_id_delete, menu_id_delete, "Delete");
-
-            menuItemAdd.setOnMenuItemClickListener(this);
-            menuItemEdit.setOnMenuItemClickListener(this);
-            menuItemDelete.setOnMenuItemClickListener(this);
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            int position = getAdapterPosition();
-            Intent intent;
-            switch (menuItem.getItemId()) {
-                case menu_id_add:
-                    intent=new Intent(BookListMainActivity.this,EditBookActivity.class);
-                    intent.putExtra("position",position);
-                    launcherAdd.launch(intent);
-
-                    break;
-                case menu_id_edit:
-                    intent=new Intent(BookListMainActivity.this,EditBookActivity.class);
-                    intent.putExtra("position",position);
-                    intent.putExtra("Title",bookList.get(position).getTitle());
-                    launcherEdit.launch(intent);
-
-                    break;
-                case menu_id_delete:
-                    AlertDialog.Builder alertDB = new AlertDialog.Builder(BookListMainActivity.this);
-                    alertDB.setPositiveButton("enter", (dialogInterface, i) -> {
-                        bookList.remove(position);
-                        dataBank.saveData();
-                        MyRecyclerViewAdapter.this.notifyItemRemoved(position);
-                    });
-                    alertDB.setNegativeButton("cancel", (dialogInterface, i) -> {
-
-                    });
-                    alertDB.setMessage("Are you sure delete" +bookList.get(position).getTitle()+"？");
-                    alertDB.setTitle("hint");
-
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + menuItem.getItemId());
-            }
-
-            return false;
-        }
-
-
-    }
-    }
 }
 
