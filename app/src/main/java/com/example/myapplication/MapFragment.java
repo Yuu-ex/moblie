@@ -1,9 +1,15 @@
 package com.example.myapplication;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +27,16 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MapFragment#newInstance} factory method to
@@ -28,6 +44,7 @@ import com.baidu.mapapi.model.LatLng;
  */
 public class MapFragment extends Fragment {
 
+    private static final int WHAT_DATA_OK = 1000;
     private MapView mapView;
     private Marker marker;
 
@@ -63,10 +80,13 @@ public class MapFragment extends Fragment {
 
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
         MarkerOptions markerOptions = new MarkerOptions().icon(bitmap).position(cenpt);
-        OverlayOptions textOption = new TextOptions().fontSize(36).fontColor(0xFF0000FF).text("JNU").position(library);
+        OverlayOptions textOption = new TextOptions().fontSize(36).fontColor(Color.BLACK).text("暨南大学").position(library);
         mapView.getMap().addOverlay(textOption);
 
         marker = (Marker) mapView.getMap().addOverlay(markerOptions);
+
+
+
 
         //对 marker 添加点击相应事件
         mapView.getMap().setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
@@ -74,7 +94,7 @@ public class MapFragment extends Fragment {
             @Override
             public boolean onMarkerClick(Marker arg0) {
                 // TODO Auto-generated method stub
-                Toast.makeText(rootView.getContext().getApplicationContext(), "暨南大学珠海校区"+marker.getPeriod(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(rootView.getContext().getApplicationContext(), "点击了maker", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
