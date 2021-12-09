@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.Data.Book;
+import com.example.myapplication.Data.DataBank;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -33,26 +35,13 @@ import java.util.List;
  */
 public class BookFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public BookFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
 
-     * @return A new instance of fragment BookFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static BookFragment newInstance() {
         BookFragment fragment = new BookFragment();
@@ -116,7 +105,7 @@ public class BookFragment extends Fragment {
                 if(null==data) return;
                 String name = data.getStringExtra("name");  //String类型的，为空系统自己为我们设置为NULL
                 int position = data.getIntExtra("position", books.size());  //将传过去的位置传回来
-                books.get(position).setName(name);
+                books.get(position).setTitle(name);
                 dataBank.saveData();
                 recycleViewAdapter.notifyItemChanged(position);
             }
@@ -139,7 +128,7 @@ public class BookFragment extends Fragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.itemlayout, parent, false);
+                    .inflate(R.layout.booklist_holder, parent, false);
 
             return new BookFragment.MyRecyclerViewAdapter.MyViewHolder(view);
         }
@@ -223,4 +212,3 @@ public class BookFragment extends Fragment {
         }
     }
     }
-}

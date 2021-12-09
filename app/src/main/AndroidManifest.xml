@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapplication">
-
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>  //添加上网访问权限
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MyApplication">
+        <meta-data android:name="com.baidu.lbsapi.API_KEY"  android:value= "RBhCZO19rotmtv3xdz8bTsu7p8r43UdB" />
         <activity
             android:name=".inputActivity"
             android:exported="false" />
-        <activity
-            android:name=".EditBookActivity"
-            android:exported="true" />
         <activity
             android:name=".BookListMainActivity"
             android:exported="true">

@@ -43,5 +43,4 @@ public class inputActivity extends AppCompatActivity {
             }
         });
     }
-    }
 }

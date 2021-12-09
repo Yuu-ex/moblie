@@ -14,6 +14,7 @@ public class Book implements Serializable{
         return Title;
     }
 
+
     public int getCoverResourceId() {
         return CoverResourceId;
     }
