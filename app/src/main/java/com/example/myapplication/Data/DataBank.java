@@ -20,7 +20,7 @@ public class DataBank {
     }
 
 
-    public List<Book> loadDate() {    //加载报春的文件/数据
+    public List<Book> loadData() {    //加载报春的文件/数据
         bookList=new ArrayList<>();
         bookList.add(new Book("软件项目管理案例教程（第4版）",R.drawable.book_2));
         bookList.add(new Book("创新工程实践", R.drawable.book_no_name));

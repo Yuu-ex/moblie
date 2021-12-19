@@ -114,7 +114,7 @@ public class BookFragment extends Fragment {
 
     public void initData() {   //直接创建一个文件夹用于存储数据
         dataBank= new DataBank(this.getContext());
-        books=dataBank.loadDate();
+        books=dataBank.loadData();
     }
 
     private class MyRecyclerViewAdapter extends RecyclerView.Adapter {
